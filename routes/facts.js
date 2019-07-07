@@ -19,10 +19,10 @@ router.get('/query', function(req, res) {
 /// TO-DO: Add logic for rating
 router.post('/add', function(req, res) {
     //This needs to be x-www-form-urlencoded
-    const { author, fact_text, source } = req.body;
+    const { author, fact_text, source, rating } = req.body;
     sequelize
-        .query('CALL postNewFact(:author, :fact_text, :source);', {
-            replacements: { author: author, fact_text: fact_text, source: source },
+        .query('CALL postNewFact(:author, :fact_text, :source, :rating);', {
+            replacements: { author: author, fact_text: fact_text, source: source, rating: rating ? rating : null },
         })
         .then(ret => {
             try {
