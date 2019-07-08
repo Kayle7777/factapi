@@ -6,7 +6,7 @@ router.get('/query', function(req, res) {
     const { query } = req;
     const sqlQuery = {
         order: Sequelize.literal('RAND()'),
-        where: {},
+        where: { rating: { [Op.not]: 'DELETE' } },
     };
 
     for (key in query) {
@@ -15,7 +15,7 @@ router.get('/query', function(req, res) {
     fact.findOne(sqlQuery).then(fact => res.json(fact));
 });
 
-///TO-DO: Figure out some way to authenticate, can only come from discord or slack
+/// TO-DO: Figure out some way to authenticate, can only come from discord or slack
 /// TO-DO: Add logic for rating
 router.post('/add', function(req, res) {
     //This needs to be x-www-form-urlencoded
