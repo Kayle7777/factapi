@@ -6,12 +6,13 @@ router.get('/query', function(req, res) {
     const { query } = req;
     const sqlQuery = {
         order: Sequelize.literal('RAND()'),
-        where: { rating: { [Op.not]: 'DELETE' } },
+        where: {},
     };
 
     for (key in query) {
-        sqlQuery.where[key] = { [Op.like]: `%${query[key]}%` };
+        sqlQuery.where[key] = { [Op.substring]: query[key] };
     }
+    console.log(sqlQuery);
     fact.findOne(sqlQuery).then(fact => res.json(fact));
 });
 

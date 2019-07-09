@@ -8,7 +8,7 @@ module.exports = (sequelize, DataTypes) => {
             fact_text: DataTypes.STRING,
             source: DataTypes.STRING,
             time_added: DataTypes.DATE,
-            rating: DataTypes.ENUM('G', 'PG', 'PG-13', 'R', 'HELL'),
+            rating: DataTypes.ENUM('G', 'PG', 'PG-13', 'R', 'HELL', 'DELETE'),
         },
         {
             timestamps: false,
