@@ -4,7 +4,6 @@ const { Op, fact, sequelize, Sequelize } = require('../models');
 
 router.get('/query', function(req, res) {
     const { query } = req;
-    console.log(query);
     const sqlQuery = {
         order: Sequelize.literal('RAND()'),
         where: {
@@ -15,13 +14,22 @@ router.get('/query', function(req, res) {
     for (key in query) {
         sqlQuery.where[key] = { [Op.substring]: query[key] };
     }
-    fact.findOne(sqlQuery).then(async fact =>
-        res.json({
-            fact_text: await require('../controllers/factService.js')(fact, query['author'], sequelize),
-            id: fact.id,
-            author: fact.author,
-        })
-    );
+    fact.findOne(sqlQuery).then(async fact => {
+        if (!fact) {
+            let meme = await sequelize.query('CALL hitMeme()');
+            let failureString = `Sorry, couldn't find a fact for '${
+                query['fact_text']
+            }'. You should add one, or try searching for '${meme[0].meme}'`;
+            res.json({
+                fact_text: failureString,
+            });
+        } else
+            res.json({
+                fact_text: await require('../controllers/factService.js')(fact, query['author'], sequelize),
+                id: fact.id,
+                author: fact.author,
+            });
+    });
 });
 
 router.get('/query/meme', function(req, res) {
