@@ -43,7 +43,7 @@ router.post('/add', function(req, res) {
     const { author, fact_text, source, rating } = req.body;
     sequelize
         .query('CALL postNewFact(:author, :fact_text, :source, :rating);', {
-            replacements: { author: author, fact_text: fact_text, source: source, rating: rating ? rating : null },
+            replacements: { author: author, fact_text: fact_text, source: source, rating: rating ? rating : 'PG-13' },
         })
         .then(ret => {
             try {
