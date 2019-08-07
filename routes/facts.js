@@ -4,17 +4,28 @@ const { Op, fact, sequelize, Sequelize } = require('../models');
 
 router.get('/query', function(req, res) {
     const { query } = req;
+    console.log(query);
     const sqlQuery = {
         order: Sequelize.literal('RAND()'),
         where: {
-            rating: { [Op.not]: "DELETE" }
+            rating: { [Op.not]: 'DELETE' },
         },
     };
 
     for (key in query) {
         sqlQuery.where[key] = { [Op.substring]: query[key] };
     }
-    fact.findOne(sqlQuery).then(fact => res.json(fact));
+    fact.findOne(sqlQuery).then(async fact =>
+        res.json({
+            fact_text: await require('../controllers/factService.js')(fact, query['author'], sequelize),
+            id: fact.id,
+            author: fact.author,
+        })
+    );
+});
+
+router.get('/query/meme', function(req, res) {
+    sequelize.query('CALL hitMeme()').then(ret => res.send(ret[0]));
 });
 
 /// TO-DO: Figure out some way to authenticate, can only come from discord or slack
